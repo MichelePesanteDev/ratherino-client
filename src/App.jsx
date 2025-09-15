@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Home";
-import Setup from "./Setup";
+import Lobby from "./Lobby";
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/setup" element={<Setup />} />
+        <Route path="/lobby" element={<Lobby />} />
       </Routes>
     </Router>
   );

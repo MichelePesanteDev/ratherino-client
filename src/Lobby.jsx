@@ -2,20 +2,23 @@ import { useState, useEffect, useRef } from "react";
 import Container from "./components/Container.jsx";
 import Submitter from "./components/Submitter.jsx";
 
-function Setup() {
+function Lobby() {
+  const roomIdRef = useRef(crypto.randomUUID());
+
   const wsRef = useRef(null);
   const [wsReady, setWsReady] = useState(false);
-
   const [topic, setTopic] = useState("");
   const [firstChoice, setFirstChoice] = useState("");
   const [secondChoice, setSecondChoice] = useState("");
 
   useEffect(() => {
-    // wsRef.current = new WebSocket("ws://localhost:8080");
-    wsRef.current = new WebSocket("wss://ratherino-server.onrender.com");
+    wsRef.current = new WebSocket(
+      `ws://localhost:8080?roomId=${roomIdRef.current}`
+    );
+    // wsRef.current = new WebSocket(`wss://ratherino-server.onrender.com?roomId=${roomIdRef.current}`);
 
     wsRef.current.onopen = () => {
-      console.log("Connessione WS aperta");
+      console.log(`Connessione WS aperta con chiave ${roomIdRef.current}`);
       setWsReady(true);
     };
 
@@ -37,7 +40,7 @@ function Setup() {
     };
 
     wsRef.current.onclose = () => {
-      console.log("Connessione WS chiusa");
+      console.log(`Connessione WS chiusa con chiave ${roomIdRef.current}`);
       setWsReady(false);
     };
 
@@ -82,7 +85,18 @@ function Setup() {
           </div>
         </div>
       </div>
-
+      <div>
+        <button
+          className="btn btn-outline-primary mt-3"
+          onClick={() => {
+            navigator.clipboard.writeText(roomIdRef.current).then(() => {
+              alert("Chiave copiata negli appunti!");
+            });
+          }}
+        >
+          Copia chiave
+        </button>
+      </div>
       {wsReady && (
         <Submitter
           backgroundColor="radial-gradient(146% 141% at 0% 100%, #6d4c8bff, #5c04ffff)"
@@ -96,4 +110,4 @@ function Setup() {
   );
 }
 
-export default Setup;
+export default Lobby;
